@@ -25,6 +25,10 @@ public class Reserva {
             throw new IllegalArgumentException("Cliente ou quarto inválido");
         }
 
+        if (!quarto.verificarDisponibilidade(dataCheckIn, dataCheckOut)) {
+            throw new IllegalStateException("Quarto indisponível para o período");
+        }
+
         this.cliente = cliente;
         this.quarto = quarto;
         this.dataCheckIn = dataCheckIn;
@@ -62,10 +66,6 @@ public class Reserva {
             }
         }
 
-        if (total < 0) {
-            total = 0;
-        }
-
         this.valorTotal = total;
         return total;
     }
@@ -74,10 +74,6 @@ public class Reserva {
 
         if (!status.equals("ATIVA")) {
             throw new IllegalStateException("Reserva não pode ser confirmada");
-        }
-
-        if (!quarto.verificarDisponibilidade(dataCheckIn, dataCheckOut)) {
-            throw new IllegalStateException("Quarto indisponível");
         }
 
         if (pagamento == null) {
