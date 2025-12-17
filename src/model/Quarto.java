@@ -7,84 +7,76 @@ import java.util.List;
 public class Quarto {
 
     private Long id;
-    private int numero;
     private String tipo;
     private int capacidade;
-    private double valorDiaria;
+    private double precoDiaria;
     private String status;
 
+    private boolean tv;
+    private boolean banheira;
+    private boolean vistaMar;
+    private double area;
 
     private List<Reserva> reservas;
 
-    public Quarto(Long id, int numero, String tipo, int capacidade, double valorDiaria) {
+    public Quarto(Long id, String tipo, int capacidade, double precoDiaria,
+                  boolean tv, boolean banheira, boolean vistaMar, double area) {
+
         this.id = id;
-        this.numero = numero;
         this.tipo = tipo;
         this.capacidade = capacidade;
-        this.valorDiaria = valorDiaria;
+        this.precoDiaria = precoDiaria;
         this.status = "DISPONIVEL";
+        this.tv = tv;
+        this.banheira = banheira;
+        this.vistaMar = vistaMar;
+        this.area = area;
         this.reservas = new ArrayList<>();
-    }
-
-    public boolean verificarDisponibilidade(LocalDate dataCheckIn, LocalDate dataCheckOut) {
-
-        if (dataCheckIn == null || dataCheckOut == null) {
-            throw new IllegalArgumentException("Datas inválidas");
-        }
-
-        if (!dataCheckOut.isAfter(dataCheckIn)) {
-            return false;
-        }
-
-        if (!status.equals("DISPONIVEL")) {
-            return false;
-        }
-
-        for (Reserva reserva : reservas) {
-
-            if (!reserva.getStatus().equals("ATIVA")) {
-                continue;
-            }
-
-            LocalDate inicioExistente = reserva.getDataCheckIn();
-            LocalDate fimExistente = reserva.getDataCheckOut();
-
-            boolean conflitoInicio =
-                    dataCheckIn.isBefore(fimExistente) &&
-                            dataCheckIn.isAfter(inicioExistente);
-
-            boolean conflitoFim =
-                    dataCheckOut.isAfter(inicioExistente) &&
-                            dataCheckOut.isBefore(fimExistente);
-
-            boolean conflitoTotal =
-                    dataCheckIn.isEqual(inicioExistente) ||
-                            dataCheckOut.isEqual(fimExistente);
-
-            if (conflitoInicio || conflitoFim || conflitoTotal) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public void atualizarStatus(String status) {
-        if (!status.equals("DISPONIVEL") && !status.equals("OCUPADO")) {
-            throw new IllegalArgumentException("Status inválido");
-        }
-        this.status = status;
     }
 
     public void adicionarReserva(Reserva reserva) {
         reservas.add(reserva);
     }
 
-    public double getValorDiaria() {
-        return valorDiaria;
+    public boolean isDisponivel(LocalDate checkin, LocalDate checkout) {
+
+        if (!"DISPONIVEL".equalsIgnoreCase(status)) {
+            return false;
+        }
+
+        for (Reserva r : reservas) {
+            if (r.conflitaCom(checkin, checkout)) {
+                return false;
+            }
+        }
+        return true;
     }
 
-    public String getStatus() {
-        return status;
+    public String getTipo() {
+        return tipo;
+    }
+
+    public int getCapacidade() {
+        return capacidade;
+    }
+
+    public double getPrecoDiaria() {
+        return precoDiaria;
+    }
+
+    public double getArea() {
+        return area;
+    }
+
+    public boolean hasTV() {
+        return tv;
+    }
+
+    public boolean hasBanheira() {
+        return banheira;
+    }
+
+    public boolean hasVistaMar() {
+        return vistaMar;
     }
 }

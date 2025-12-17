@@ -1,7 +1,11 @@
 package model;
 
+import java.time.LocalDate;
+import java.util.List;
+
 public class Administrador extends Usuario {
 
+    private static final String STATUS_CONCLUIDA = "CONCLUIDA";
     private String cargo;
 
     public Administrador(Long id, String nome, String email, String senha, String cargo) {
@@ -9,33 +13,46 @@ public class Administrador extends Usuario {
         this.cargo = cargo;
     }
 
-    public void cadastrarHotel(Hotel hotel) {
-        if (hotel == null) {
-            throw new IllegalArgumentException("Hotel inválido");
-        }
-    }
+    public RelatorioFinanceiro gerarRelatorioFinanceiro(
+            List<Reserva> reservas,
+            LocalDate inicio,
+            LocalDate fim,
+            String tipoRelatorio,
+            boolean incluirServicos,
+            String statusPagamento
+    ) {
 
-    public void cadastrarQuarto(Hotel hotel, Quarto quarto) {
-        if (hotel == null || quarto == null) {
-            throw new IllegalArgumentException("Hotel ou quarto inválido");
-        }
-        hotel.adicionarQuarto(quarto);
-    }
+        RelatorioFinanceiro relatorio = new RelatorioFinanceiro();
 
-    public void cadastrarServico(Servico servico) {
-        if (servico == null) {
-            throw new IllegalArgumentException("Serviço inválido");
+        if (inicio.isAfter(fim)) {
+            throw new IllegalArgumentException("Data inicial inválida");
         }
-    }
 
-    public void alterarStatusQuarto(Quarto quarto, String status) {
-        if (quarto == null) {
-            throw new IllegalArgumentException("Quarto inválido");
+        for (Reserva r : reservas) {
+
+            if (r.getDataCheckOut().isAfter(inicio)
+                    && r.getDataCheckIn().isBefore(fim)
+                    && STATUS_CONCLUIDA.equals(r.getStatus())) {
+
+                double valorAgregado = 0;
+
+                if ("RECEITA".equals(tipoRelatorio)) {
+                    valorAgregado = r.calcularValorTotal();
+                }
+                else if ("DESPESA".equals(tipoRelatorio)) {
+                    valorAgregado = -100;
+                }
+
+                if (statusPagamento == null
+                        || "TODOS".equals(statusPagamento)
+                        || "PAGO".equals(statusPagamento)) {
+
+                    if (valorAgregado != 0) {
+                        relatorio.adicionarValor(valorAgregado);
+                    }
+                }
+            }
         }
-        quarto.atualizarStatus(status);
-    }
-
-    public String getCargo() {
-        return cargo;
+        return relatorio;
     }
 }

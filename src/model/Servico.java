@@ -2,25 +2,16 @@ package model;
 
 public class Servico {
 
-    private Long id;
     private String nome;
-    private double valor;
+    private double preco;
 
-    public Servico(Long id, String nome, double valor) {
-        this.id = id;
+    public Servico(String nome, double preco) {
         this.nome = nome;
-        this.valor = valor;
+        this.preco = preco;
     }
 
-    public void atualizarValor(double novoValor) {
-        if (novoValor <= 0) {
-            throw new IllegalArgumentException("Valor inválido");
-        }
-        this.valor = novoValor;
-    }
-
-    public double getValor() {
-        return valor;
+    public double getPreco() {
+        return preco;
     }
 
     public String getNome() {

@@ -1,42 +1,18 @@
 package model;
 
-import java.time.LocalDate;
-
 public class Pagamento {
 
-    private Long id;
+    private Reserva reserva;
     private double valor;
-    private String formaPagamento;
-    private String statusPagamento;
-    private LocalDate dataPagamento;
+    private String status;
 
-    public Pagamento(double valor, String formaPagamento) {
+    public Pagamento(Reserva reserva, double valor) {
+        this.reserva = reserva;
         this.valor = valor;
-        this.formaPagamento = formaPagamento;
-        this.statusPagamento = "PENDENTE";
+        this.status = "PAGO";
     }
 
-    public boolean processarPagamento() {
-
-        if (valor <= 0) {
-            return false;
-        }
-
-        statusPagamento = "PAGO";
-        dataPagamento = LocalDate.now();
-        return true;
-    }
-
-    public void estornarPagamento() {
-
-        if (!statusPagamento.equals("PAGO")) {
-            throw new IllegalStateException("Pagamento não pode ser estornado");
-        }
-
-        statusPagamento = "ESTORNADO";
-    }
-
-    public String getStatusPagamento() {
-        return statusPagamento;
+    public String getStatus() {
+        return status;
     }
 }

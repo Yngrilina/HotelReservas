@@ -6,47 +6,26 @@ import java.util.List;
 
 public class Cliente extends Usuario {
 
-    private String cpf;
-    private String telefone;
     private List<Reserva> reservas;
 
-    public Cliente(Long id, String nome, String email, String senha,
-                   String cpf, String telefone) {
+    public Cliente(Long id, String nome, String email, String senha) {
         super(id, nome, email, senha);
-        this.cpf = cpf;
-        this.telefone = telefone;
         this.reservas = new ArrayList<>();
     }
 
-    public Reserva realizarReserva(Quarto quarto,
-                                   LocalDate dataCheckIn,
-                                   LocalDate dataCheckOut) {
-
-        if (quarto == null) {
-            throw new IllegalArgumentException("Quarto inválido");
-        }
-
-        Reserva reserva = new Reserva(this, quarto, dataCheckIn, dataCheckOut);
+    public Reserva realizarReserva(Quarto quarto, LocalDate checkin, LocalDate checkout) {
+        Reserva reserva = new Reserva(this, quarto, checkin, checkout);
         reservas.add(reserva);
+        quarto.adicionarReserva(reserva);
         return reserva;
     }
 
     public void cancelarReserva(Reserva reserva) {
-        if (reserva == null) {
-            throw new IllegalArgumentException("Reserva inválida");
-        }
-        reserva.cancelarReserva();
+        reservas.remove(reserva);
+        reserva.cancelar();
     }
 
     public List<Reserva> listarReservas() {
         return reservas;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public String getTelefone() {
-        return telefone;
     }
 }
