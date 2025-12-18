@@ -79,4 +79,5 @@ public class Quarto {
     public boolean hasVistaMar() {
         return vistaMar;
     }
+
 }
