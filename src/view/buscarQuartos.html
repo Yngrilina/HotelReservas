@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema Hotel - Teste Selenium</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <h2 class="mb-4">🔍 Teste de Busca de Quartos</h2>
+
+    <div class="card card-body shadow-sm">
+        <form id="formBusca">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label>Check-in</label>
+                    <input type="date" id="checkin" class="form-control">
+                </div>
+                <div class="col-md-3">
+                    <label>Check-out</label>
+                    <input type="date" id="checkout" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <label>Tipo</label>
+                    <select id="tipo" class="form-select">
+                        <option value="STANDARD">Standard</option>
+                        <option value="LUXO">Luxo</option>
+                        <option value="SUITE">Suíte</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label>Perfil</label>
+                    <select id="perfil" class="form-select">
+                        <option value="NORMAL">Normal</option>
+                        <option value="VIP">VIP</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label>Preço Máx</label>
+                    <input type="number" id="precoMax" class="form-control" value="1000">
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="button" id="btnBuscar" class="btn btn-primary w-100" onclick="executarLogica()">Pesquisar</button>
+                </div>
+            </div>
+        </form>
+        <div id="mensagem-erro" class="alert alert-danger mt-3" style="display:none;"></div>
+    </div>
+
+    <div id="resultados" class="mt-4">
+        <div class="card p-3 mb-2">
+            <h5 class="nome-quarto">Quarto Standard #101</h5>
+            <p>Preço: R$ 200,00</p>
+        </div>
+        <div class="card p-3 mb-2">
+            <h5 class="nome-quarto">Quarto de Luxo #201</h5>
+            <p>Preço: R$ 600,00</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function executarLogica() {
+        const checkin = document.getElementById('checkin').value;
+        const checkout = document.getElementById('checkout').value;
+        const perfil = document.getElementById('perfil').value;
+        const erroDiv = document.getElementById('mensagem-erro');
+
+        // Lógica de Erro de Data (CT03)
+        if (checkin && checkout && checkout < checkin) {
+            erroDiv.innerText = "Data de saída não pode ser anterior à entrada";
+            erroDiv.style.display = "block";
+            return;
+        }
+        erroDiv.style.display = "none";
+
+        // Lógica de Alerta para os outros casos (CT01, CT02, CT04, CT05)
+        let msg = "Enviando dados para o Java...";
+        if (perfil === "VIP") {
+            msg = "Perfil VIP detectado: Ignorando filtros de preço!";
+        }
+        alert(msg);
+    }
+</script>
+</body>
+</html>
